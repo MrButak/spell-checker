@@ -6,16 +6,16 @@
 #include <strings.h>
 #include <ctype.h>
 
-
-const int max_word_length = 18;
-// prototypes
-void store_hash(char current_word[max_word_length]);
-
 typedef struct node {
 	char word[18];
 	struct node *next;
 }
 node;
+const int max_word_length = 18;
+// prototypes
+void store_hash(char current_word[max_word_length], node *head);
+
+
 
 node *buckets[25];
 
@@ -30,8 +30,11 @@ int main(void) {
 
 	// allocate memory for each node in buckets array
 	for(int i = 0; i < 25; i++) {
-		buckets[i] = malloc(sizeof(node));
-		buckets[i]->next = NULL;
+		node *head = malloc(sizeof(node));
+		head->next = NULL;
+		buckets[i] = head;
+		// buckets[i] = malloc(sizeof(node));
+		// buckets[i]->next = NULL;
 	}
 	
 	
@@ -47,7 +50,14 @@ int main(void) {
 
 	// for(int j = 0; j < 6; j++) {
 		fscanf(dict, "%s", current_word);
-		store_hash(current_word);
+
+		int position = ((int)tolower(current_word[0]) - 97);
+		
+
+		store_hash(current_word, buckets[position]);
+		printf("%s\n", buckets[position]->word);
+
+		
 		// for(int i = 0; i < 26; i++) {
 		// 	if(alpha[i] == tolower(current_word[0])) {
 				// store_hash(current_word);
@@ -68,23 +78,31 @@ int main(void) {
 	
 }
 
-void store_hash(char current_word[]) {
+void store_hash(char current_word[], node *head) {
 	// I need to place each word in appopriate position in buckets[].
 	// Then I need to point the "head" of that linked list to current_word node,
 		// then point new word node to "head". Then new word will become the "head".
 	node *curr_word = malloc(sizeof(node));
-	curr_word->next = NULL;
+	if(curr_word == NULL) {
+		printf("failed, out of memory");
+		return;
+	}
+	
 	strcpy(curr_word->word, current_word);
-	int position = ((int)tolower(current_word[0]) - 97);
+	curr_word = head->next;
+	curr_word = head;
 
-	buckets[position] = curr_word;
-	if(buckets[position]->next == NULL) {
-		printf("its NULL");
-	}
-	else {
-		printf("not NULL");
-	}
-	//printf("%s", buckets[position]->word);
+	// curr_word->next = buckets[position];
+	
+	
+	
+	
+	
+	// printf("%s\n", buckets[position]->word);
+	
+
+	
+
 	
     return;
 }
