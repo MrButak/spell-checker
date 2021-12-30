@@ -1,0 +1,4 @@
+    Hello, I'm doing a spell check on this text file. Will any of the
+words NOT match what's in the dictionary.txt? I'm going to need to learn how
+to omit commas, apostrophes, semicolons, and all other special characters.
+I should omit numbers and punctuation too! Zebras.

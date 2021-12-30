@@ -124,6 +124,16 @@ void compare_lists(void) {
 	// todo:
 	// 1. check each word in check_buckets[i] against every word in buckets[i]
 	// loop each word in check_buckets[i] * buckets[i].length
+
+	// print all words from linked lists
+	int word_count = 0;
+	for(int i = 0; i < buckets_length; i++) {
+		for(node *tmp = check_buckets[i]; tmp != NULL; tmp = tmp->next) {
+			printf("%s\n", tmp->word);
+			word_count++;
+		}
+	}
+	printf("word cound: %i", word_count - buckets_length);
 }
 
 
