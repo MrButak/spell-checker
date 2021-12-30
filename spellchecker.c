@@ -87,6 +87,12 @@ int main(int argc, char *argv[]) {
 
 	// call funtion that will compare lists
 	compare_lists();
+
+	// printf out misspelled words
+	for(node *tmp = misspelled_buckets; tmp->next != NULL; tmp = tmp->next) {
+		printf("misspelled words: %s\n", tmp->word);
+	}
+
 	free_memory();
 	fclose(dict);
 	fclose(check_spelling);
@@ -147,21 +153,15 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 }
 
 void compare_lists(void) {
-	// used for the first word comparison to determine size of array
-	bool get_word_count = true;
-
+	
 	for(int i = 0; i < buckets_length; i++) {
 		if(check_buckets[i]->next == NULL) {
 			continue;
 		}
 		else {
-			//printf("something in check_buckets[%i]\n", i);
 			for(node *tmp = check_buckets[i]; tmp->next != NULL; tmp = tmp->next) {
-				
 				compare_words(tmp->word, i);
-				
 			}
-			
 		}
 	}
 	return;
@@ -169,25 +169,21 @@ void compare_lists(void) {
 
 void compare_words(char word_to_check[], int index) {
 
-	
 	for(node *tmp = buckets[index]; tmp->next != NULL; tmp = tmp->next) {
-		// while(strcmp(word_to_check, tmp->word) == 0) {
-			// node *misspelled_word = malloc(sizeof(node));
-			// misspelled_word = tmp;
-			// misspelled_word->next = misspelled_word;
-			// printf("index: %i || word: %s || dict word: %s || strcmp int: %i\n\n", index, word_to_check, tmp->word, strcmp(word_to_check, tmp->word));
 		if(strcmp(word_to_check, tmp->word) == 0) {
-			//printf("%s\n", word_to_check);
 			return;
 		}	
-		
-			
-		//}
-		
-		// return;
 	}
-	printf("not in there: %s\n", word_to_check);
-	
+	// if no word match, create new node and link it to the list
+	node *misspelled = malloc(sizeof(node));
+	if(misspelled == NULL) {
+		printf("failed, out of memory\n");
+		free_memory();
+		exit(1);
+	}
+	strcpy(misspelled->word, word_to_check);
+	misspelled->next = misspelled_buckets; // new node points to linked list
+	misspelled_buckets = misspelled; // linked list is now new node, which is pointing to linked list, and therefore is new linked list
 	return;
 }
 
@@ -210,6 +206,7 @@ void free_memory(void) {
 			free(temp);
 		}
 	}
+	free(misspelled_buckets);
 	return;
 }
 
