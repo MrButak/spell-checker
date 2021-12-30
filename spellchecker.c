@@ -6,67 +6,49 @@
 #include <strings.h>
 #include <ctype.h>
 
+const int max_word_length = 18;
 typedef struct node {
 	char word[18];
 	struct node *next;
 }
 node;
-const int max_word_length = 18;
 // prototypes
-void store_hash(char current_word[max_word_length], node *head);
-
-
+void store_hash(char current_word[max_word_length], node *head, int position);
 
 node *buckets[25];
 
 int main(void) {
 	
-
 	FILE *dict = fopen("dictionary.txt", "r");
-	const int alpa_length = 26;
 	char current_word[max_word_length];
-	char alpha[alpa_length];
 	
-
-	// allocate memory for each node in buckets array
+	// allocate memory for each node in buckets array and insert head node
 	for(int i = 0; i < 25; i++) {
 		node *head = malloc(sizeof(node));
+		if(head == NULL) {
+			printf("failed, out of memory\n");
+			return 1;
+		}
 		head->next = NULL;
 		buckets[i] = head;
-		// buckets[i] = malloc(sizeof(node));
-		// buckets[i]->next = NULL;
+	}
+
+	int position;
+	while(fscanf(dict, "%s", current_word) != EOF) {
+		position = ((int)tolower(current_word[0]) - 97);
+		store_hash(current_word, buckets[position], position);
 	}
 	
 	
-
-	 
 	
 	
-	// create array of ints wich represent the ascii lowercase alphabet
-	for(int i = 97, j = 0; i < 123; i++) {
-		alpha[j] = i;
-		j++;
-	}
 
-	// for(int j = 0; j < 6; j++) {
-		fscanf(dict, "%s", current_word);
-
-		int position = ((int)tolower(current_word[0]) - 97);
-		
-
-		store_hash(current_word, buckets[position]);
-		printf("%s\n", buckets[position]->word);
-
-		
-		// for(int i = 0; i < 26; i++) {
-		// 	if(alpha[i] == tolower(current_word[0])) {
-				// store_hash(current_word);
-				// continue;
-			//}
-		//}
-	// }
+	printf("%s\n", buckets[12]->word);
+	// printf("%s\n", buckets[0]->next->word);
+	// printf("%s\n", buckets[0]->next->next->word);
 	
-	fclose(dict);
+
+	
 	// free memory allocted to buckets array (which contains nodes)
 	for(int i = 0; i < 25; i++) {
 		while(buckets[i] != NULL) {
@@ -75,34 +57,48 @@ int main(void) {
 			buckets[i] = temp;
 		}
 	}
-	
+	fclose(dict);
 }
 
-void store_hash(char current_word[], node *head) {
-	// I need to place each word in appopriate position in buckets[].
-	// Then I need to point the "head" of that linked list to current_word node,
-		// then point new word node to "head". Then new word will become the "head".
+void store_hash(char current_word[], node *head, int position) {
+	
+	// create new node and give value of current_word
 	node *curr_word = malloc(sizeof(node));
 	if(curr_word == NULL) {
-		printf("failed, out of memory");
+		printf("failed, out of memory\n");
 		return;
 	}
-	
 	strcpy(curr_word->word, current_word);
-	curr_word = head->next;
-	curr_word = head;
+	curr_word->next = head; // point new node to current head
+	buckets[position] = curr_word; // assign index 0 to new node
 
-	// curr_word->next = buckets[position];
-	
-	
-	
-	
-	
-	// printf("%s\n", buckets[position]->word);
-	
-
-	
-
-	
     return;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// char alpha[alpa_length];
+// const int alpa_length = 26;
+// // create array of ints wich represent the ascii lowercase alphabet
+	// for(int i = 97, j = 0; i < 123; i++) {
+	// 	alpha[j] = i;
+	// 	j++;
+	// }
