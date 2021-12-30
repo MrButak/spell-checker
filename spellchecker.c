@@ -23,7 +23,7 @@ node *check_buckets[26];
 int buckets_length = sizeof(buckets) / sizeof(*buckets);
 
 int main(int argc, char *argv[]) {
-	
+
 	if(argc != 3) {
 		printf("usage: ./spellchecker dictionary.txt checkspelling.txt\n");
 		return 1;
@@ -38,22 +38,29 @@ int main(int argc, char *argv[]) {
 		printf("could not open file %s\n", argv[2]);
 		return 1;
 	}
-	
+
 	bool is_check = false;
 	char current_word[max_word_length];
-	
+
+	printf("%i", buckets_length);
 	// allocate memory for each node in buckets array and insert head node
 	for(int i = 0; i < buckets_length; i++) {
-		node *head = malloc(sizeof(node));
-		if(head == NULL) {
+		buckets[i] = malloc(sizeof(node));
+		check_buckets[i] = malloc(sizeof(node));
+		if(buckets[i] == NULL)  {
 			printf("failed, out of memory\n");
 			free_memory();
 			return 1;
 		}
-		head->next = NULL;
-		buckets[i] = head;
-		check_buckets[i] = head;
+		else if(check_buckets[i] == NULL) {
+			printf("failed, out of memory\n");
+			free_memory();
+			return 1;
+		}
+		buckets[i]->next = NULL;
+		check_buckets[i]->next = NULL;
 	}
+
 
 	// store each word from dictionary into buckets[] as linked lists
 	int position;
@@ -78,7 +85,7 @@ int main(int argc, char *argv[]) {
 }
 
 void store_hash(char current_word[], node *head, int position, bool is_check) {
-	
+
 	if(is_check == false) {
 		// create new node and give value of current_word
 		node *curr_word = malloc(sizeof(node));
@@ -117,71 +124,33 @@ void compare_lists(void) {
 	// print all words from linked lists
 	// int word_count = 0;
 	// for(int i = 0; i < buckets_length; i++) {
-	// 	for(node *tmp = check_buckets[i]; tmp != NULL; tmp = tmp->next) {
+	// 	for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
 	// 		printf("%s\n", tmp->word);
 	// 		word_count++;
 	// 	}
 	// }
 	// printf("word cound: %i", word_count - buckets_length);
+	return;
 }
 
-
 void free_memory(void) {
-
+	node *temp;
 	// free memory allocted to buckets array (which contains nodes)
 	for(int i = 0; i < buckets_length; i++) {
 		while(buckets[i] != NULL) {
-			node *temp = buckets[i]->next;
-			free(buckets[i]);
-			buckets[i] = temp;
+			temp = buckets[i];
+			buckets[i] = buckets[i]->next;
+			free(temp);
 		}
 	}
+
 	for(int i = 0; i < buckets_length; i++) {
 		while(check_buckets[i] != NULL) {
-			node *temp = check_buckets[i]->next;
-			free(check_buckets[i]);
-			check_buckets[i] = temp;
+			temp = check_buckets[i];
+			check_buckets[i] = check_buckets[i]->next;
+			free(temp);
 		}
 	}
 	return;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// char alpha[alpa_length];
-// const int alpa_length = 26;
-// // create array of ints wich represent the ascii lowercase alphabet
-	// for(int i = 97, j = 0; i < 123; i++) {
-	// 	alpha[j] = i;
-	// 	j++;
-	// }
-
-// print all words from linked lists
-// int word_count = 0;
-// 	for(int i = 0; i < buckets_length; i++) {
-// 		for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
-		
-// 			printf("%s\n", tmp->word);
-// 			word_count++;
-		
-// 		}
-// 	}
-// 	printf("word cound: %i", word_count - buckets_length);
