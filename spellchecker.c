@@ -121,7 +121,9 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 }
 
 void compare_lists(void) {
-	printf("hey");
+	// todo:
+	// 1. check each word in check_buckets[i] against every word in buckets[i]
+	// loop each word in check_buckets[i] * buckets[i].length
 }
 
 
