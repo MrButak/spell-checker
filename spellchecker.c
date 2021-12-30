@@ -3,11 +3,10 @@
 #include <stdlib.h>
 //#include <stdint.h>
 #include <string.h>
-//#include <strings.h>
-//#include <strings.h>
+#include <strings.h>
 #include <ctype.h>
 
-const int max_word_length = 28;
+int max_word_length = 28;
 typedef struct node {
 	char word[28];
 	struct node *next;
@@ -15,7 +14,9 @@ typedef struct node {
 node;
 // prototypes
 void store_hash(char current_word[max_word_length], node *head, int position, bool is_check);
+char make_lowercase(char current_word[max_word_length]);
 void compare_lists(void);
+int compare_words(char word_misspelled[max_word_length]);
 void free_memory(void);
 
 node *buckets[26];
@@ -42,7 +43,6 @@ int main(int argc, char *argv[]) {
 	bool is_check = false;
 	char current_word[max_word_length];
 
-	printf("%i", buckets_length);
 	// allocate memory for each node in buckets array and insert head node
 	for(int i = 0; i < buckets_length; i++) {
 		buckets[i] = malloc(sizeof(node));
@@ -85,8 +85,10 @@ int main(int argc, char *argv[]) {
 }
 
 void store_hash(char current_word[], node *head, int position, bool is_check) {
-
+	
+	
 	if(is_check == false) {
+		
 		// create new node and give value of current_word
 		node *curr_word = malloc(sizeof(node));
 		if(curr_word == NULL) {
@@ -94,7 +96,17 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 			free_memory();
 			exit(1);
 		}
-		strcpy(curr_word->word, current_word);
+		// convert to lowercase
+		int word_len = strlen(current_word);
+		char tmp_word[max_word_length];
+
+		for(int i = 0; i < word_len; i++) {
+			tmp_word[i] = tolower(current_word[i]);
+		}
+		tmp_word[word_len] = '\0';
+
+		// add new node to beginning of linked list
+		strcpy(curr_word->word, tmp_word);
 		curr_word->next = head; // point new node to current head
 		buckets[position] = curr_word; // assign index 0 to new node
 
@@ -121,16 +133,33 @@ void compare_lists(void) {
 	// 1. check each word in check_buckets[i] against every word in buckets[i]
 	// loop each word in check_buckets[i] * buckets[i].length
 
-	// print all words from linked lists
-	// int word_count = 0;
-	// for(int i = 0; i < buckets_length; i++) {
-	// 	for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
-	// 		printf("%s\n", tmp->word);
-	// 		word_count++;
-	// 	}
-	// }
-	// printf("word cound: %i", word_count - buckets_length);
+	for(int i = 0; i < buckets_length; i++) {
+		for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
+			
+			printf("%s\n", tmp->word);
+			//compare_words(tmp->word);
+			
+		}
+	}
 	return;
+}
+
+int compare_words(char word_misspelled[]) {
+	//int position = ((int)tolower(word_misspelled[0]) - 97);
+
+	//for(node *tmp = buckets[position]; tmp != NULL; tmp = tmp->next) {
+		//printf("%s\n", tmp->word);
+	//}
+
+	
+			
+			// if(strcmp(word_misspelled, tmp->word)) {
+			// 	printf("misspelled: %s\n", word_misspelled);
+			// 	return;
+	
+			
+	
+	return 0;
 }
 
 void free_memory(void) {
@@ -154,3 +183,13 @@ void free_memory(void) {
 	return;
 }
 
+char make_lowercase(char current_word[]) {
+	return 0;
+}
+// printf all words
+// for(int i = 0; i < buckets_length; i++) {
+// 	for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
+// 		printf("%s\n", tmp->word);
+		
+// 	}
+// }
