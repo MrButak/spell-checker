@@ -171,11 +171,23 @@ void compare_words(char word_to_check[], int index) {
 
 	
 	for(node *tmp = buckets[index]; tmp->next != NULL; tmp = tmp->next) {
-		if(strcmp(word_to_check, tmp->word) != 0) {
-
-		}
+		// while(strcmp(word_to_check, tmp->word) == 0) {
+			// node *misspelled_word = malloc(sizeof(node));
+			// misspelled_word = tmp;
+			// misspelled_word->next = misspelled_word;
+			// printf("index: %i || word: %s || dict word: %s || strcmp int: %i\n\n", index, word_to_check, tmp->word, strcmp(word_to_check, tmp->word));
+		if(strcmp(word_to_check, tmp->word) == 0) {
+			//printf("%s\n", word_to_check);
+			return;
+		}	
+		
+			
+		//}
+		
+		// return;
 	}
-	// printf("index: %i word: %s\n", index, word_to_check);
+	printf("not in there: %s\n", word_to_check);
+	
 	return;
 }
 
