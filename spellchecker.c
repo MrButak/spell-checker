@@ -13,9 +13,11 @@ typedef struct node {
 }
 node;
 // prototypes
-void store_hash(char current_word[max_word_length], node *head, int position);
+void store_hash(char current_word[max_word_length], node *head, int position, bool is_check);
+void compare_lists(void);
 
 node *buckets[26];
+node *check_buckets[26];
 int buckets_length = sizeof(buckets) / sizeof(*buckets);
 
 int main(int argc, char *argv[]) {
@@ -35,7 +37,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 	
-	
+	bool is_check = false;
 	char current_word[max_word_length];
 	
 	// allocate memory for each node in buckets array and insert head node
@@ -47,15 +49,26 @@ int main(int argc, char *argv[]) {
 		}
 		head->next = NULL;
 		buckets[i] = head;
+		check_buckets[i] = head;
 	}
 
-	// store each word from dictionary into buckets[] as a linked list
+	// store each word from dictionary into buckets[] as linked lists
 	int position;
 	while(fscanf(dict, "%s", current_word) != EOF) {
 		// determine index which current_word should be stored in buckets[]
 		position = ((int)tolower(current_word[0]) - 97);
-		store_hash(current_word, buckets[position], position);
+		store_hash(current_word, buckets[position], position, is_check);
 	}
+
+	// store each word from spellcheck.txt into check_buckets[] as linked lists
+	is_check = true;
+	while (fscanf(check_spelling, "%s", current_word) != EOF) {
+		position = ((int)tolower(current_word[0]) - 97);
+		store_hash(current_word, check_buckets[position], position, is_check);
+	}
+
+	// call funtion that will compare lists
+	compare_lists();
 	
 
 	// free memory allocted to buckets array (which contains nodes)
@@ -66,22 +79,49 @@ int main(int argc, char *argv[]) {
 			buckets[i] = temp;
 		}
 	}
+	for(int i = 0; i < buckets_length; i++) {
+		while(check_buckets[i] != NULL) {
+			node *temp = check_buckets[i]->next;
+			free(check_buckets[i]);
+			check_buckets[i] = temp;
+		}
+	}
 	fclose(dict);
+	fclose(check_spelling);
 }
 
-void store_hash(char current_word[], node *head, int position) {
+void store_hash(char current_word[], node *head, int position, bool is_check) {
 	
-	// create new node and give value of current_word
-	node *curr_word = malloc(sizeof(node));
-	if(curr_word == NULL) {
-		printf("failed, out of memory\n");
+	if(is_check == false) {
+		// create new node and give value of current_word
+		node *curr_word = malloc(sizeof(node));
+		if(curr_word == NULL) {
+			printf("failed, out of memory\n");
+			return;
+		}
+		strcpy(curr_word->word, current_word);
+		curr_word->next = head; // point new node to current head
+		buckets[position] = curr_word; // assign index 0 to new node
+
 		return;
 	}
-	strcpy(curr_word->word, current_word);
-	curr_word->next = head; // point new node to current head
-	buckets[position] = curr_word; // assign index 0 to new node
+	else {
+		// create new node and give value of current_word
+		node *curr_word = malloc(sizeof(node));
+		if(curr_word == NULL) {
+			printf("failed, out of memory\n");
+			return;
+		}
+		strcpy(curr_word->word, current_word);
+		curr_word->next = head; // point new node to current head
+		check_buckets[position] = curr_word; // assign index 0 to new node
 
-    return;
+		return;
+	}
+}
+
+void compare_lists(void) {
+	printf("hey");
 }
 
 
