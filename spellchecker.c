@@ -10,18 +10,20 @@ int max_word_length = 28;
 typedef struct node {
 	char word[28];
 	struct node *next;
-}
+} 
 node;
-// prototypes
-void store_hash(char current_word[max_word_length], node *head, int position, bool is_check);
-char make_lowercase(char current_word[max_word_length]);
-void compare_lists(void);
-int compare_words(char word_misspelled[max_word_length]);
-void free_memory(void);
 
 node *buckets[26];
 node *check_buckets[26];
+node *misspelled_buckets;
 int buckets_length = sizeof(buckets) / sizeof(*buckets);
+
+// prototypes
+void store_hash(char current_word[max_word_length], node *head, int position, bool is_check);
+void compare_lists(void);
+void compare_words(char word_to_check[max_word_length], int index);
+void free_memory(void);
+
 
 int main(int argc, char *argv[]) {
 
@@ -59,6 +61,12 @@ int main(int argc, char *argv[]) {
 		}
 		buckets[i]->next = NULL;
 		check_buckets[i]->next = NULL;
+	}
+	misspelled_buckets = malloc(sizeof(node));
+	if(misspelled_buckets == NULL) {
+		printf("failed, out of memory\n");
+		free_memory();
+		return 1;
 	}
 
 
@@ -120,7 +128,17 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 			free_memory();
 			exit(1);
 		}
-		strcpy(curr_word->word, current_word);
+
+		// convert to lowercase
+		int word_len = strlen(current_word);
+		char tmp_word[max_word_length];
+
+		for(int i = 0; i < word_len; i++) {
+			tmp_word[i] = tolower(current_word[i]);
+		}
+
+		tmp_word[word_len] = '\0';
+		strcpy(curr_word->word, tmp_word);
 		curr_word->next = head; // point new node to current head
 		check_buckets[position] = curr_word; // assign index 0 to new node
 
@@ -129,42 +147,42 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 }
 
 void compare_lists(void) {
-	// todo:
-	// 1. check each word in check_buckets[i] against every word in buckets[i]
-	// loop each word in check_buckets[i] * buckets[i].length
+	// used for the first word comparison to determine size of array
+	bool get_word_count = true;
 
 	for(int i = 0; i < buckets_length; i++) {
-		for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
-			
-			printf("%s\n", tmp->word);
-			//compare_words(tmp->word);
+		if(check_buckets[i]->next == NULL) {
+			continue;
+		}
+		else {
+			//printf("something in check_buckets[%i]\n", i);
+			for(node *tmp = check_buckets[i]; tmp->next != NULL; tmp = tmp->next) {
+				
+				compare_words(tmp->word, i);
+				
+			}
 			
 		}
 	}
 	return;
 }
 
-int compare_words(char word_misspelled[]) {
-	//int position = ((int)tolower(word_misspelled[0]) - 97);
-
-	//for(node *tmp = buckets[position]; tmp != NULL; tmp = tmp->next) {
-		//printf("%s\n", tmp->word);
-	//}
+void compare_words(char word_to_check[], int index) {
 
 	
-			
-			// if(strcmp(word_misspelled, tmp->word)) {
-			// 	printf("misspelled: %s\n", word_misspelled);
-			// 	return;
-	
-			
-	
-	return 0;
+	for(node *tmp = buckets[index]; tmp->next != NULL; tmp = tmp->next) {
+		if(strcmp(word_to_check, tmp->word) != 0) {
+
+		}
+	}
+	// printf("index: %i word: %s\n", index, word_to_check);
+	return;
 }
+
 
 void free_memory(void) {
 	node *temp;
-	// free memory allocted to buckets array (which contains nodes)
+	// free memory allocted of all buckets arrays (which contains nodes)
 	for(int i = 0; i < buckets_length; i++) {
 		while(buckets[i] != NULL) {
 			temp = buckets[i];
@@ -183,13 +201,27 @@ void free_memory(void) {
 	return;
 }
 
-char make_lowercase(char current_word[]) {
-	return 0;
-}
 // printf all words
 // for(int i = 0; i < buckets_length; i++) {
 // 	for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
 // 		printf("%s\n", tmp->word);
 		
 // 	}
+// }
+
+
+// determines if anything is in buckets[i] and if so printf the word(s) there
+// for(int i = 0; i < buckets_length; i++) {
+// 		if(check_buckets[i]->next == NULL) {
+// 			continue;
+// 		}
+// 		else {
+// 			printf("something in check_buckets[%i]\n", i);
+// 			for(node *tmp = check_buckets[i]; tmp->next != NULL; tmp = tmp->next) {
+// 				printf("word: %s\n", tmp->word);
+// 			}
+// 			continue;
+// 		}
+// 	}
+// 	return;
 // }
