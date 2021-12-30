@@ -68,6 +68,7 @@ int main(int argc, char *argv[]) {
 		free_memory();
 		return 1;
 	}
+	misspelled_buckets->next = NULL;
 
 
 	// store each word from dictionary into buckets[] as linked lists
@@ -85,7 +86,7 @@ int main(int argc, char *argv[]) {
 		store_hash(current_word, check_buckets[position], position, is_check);
 	}
 
-	// call funtion that will compare lists
+	// call funtion that will compare lists which will in turn call function to compare words
 	compare_lists();
 
 	// printf out misspelled words
@@ -98,8 +99,8 @@ int main(int argc, char *argv[]) {
 	fclose(check_spelling);
 }
 
+
 void store_hash(char current_word[], node *head, int position, bool is_check) {
-	
 	
 	if(is_check == false) {
 		
@@ -152,9 +153,11 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 	}
 }
 
+
 void compare_lists(void) {
 	
 	for(int i = 0; i < buckets_length; i++) {
+		// check to see if array position is empty. if so continue to next iteration
 		if(check_buckets[i]->next == NULL) {
 			continue;
 		}
@@ -167,8 +170,9 @@ void compare_lists(void) {
 	return;
 }
 
-void compare_words(char word_to_check[], int index) {
 
+void compare_words(char word_to_check[], int index) {
+	// iterate through every word of dictionary in index position to look for a match
 	for(node *tmp = buckets[index]; tmp->next != NULL; tmp = tmp->next) {
 		if(strcmp(word_to_check, tmp->word) == 0) {
 			return;
@@ -182,8 +186,8 @@ void compare_words(char word_to_check[], int index) {
 		exit(1);
 	}
 	strcpy(misspelled->word, word_to_check);
-	misspelled->next = misspelled_buckets; // new node points to linked list
-	misspelled_buckets = misspelled; // linked list is now new node, which is pointing to linked list, and therefore is new linked list
+	misspelled->next = misspelled_buckets; // point new node to head of linked list
+	misspelled_buckets = misspelled; // linked list is now = to new node, which is pointing to linked list, and therefore is now complete linked list
 	return;
 }
 
@@ -206,31 +210,10 @@ void free_memory(void) {
 			free(temp);
 		}
 	}
-	free(misspelled_buckets);
+	while(misspelled_buckets != NULL) {
+		temp = misspelled_buckets;
+		misspelled_buckets = misspelled_buckets->next;
+		free(temp);
+	}
 	return;
 }
-
-// printf all words
-// for(int i = 0; i < buckets_length; i++) {
-// 	for(node *tmp = buckets[i]; tmp != NULL; tmp = tmp->next) {
-// 		printf("%s\n", tmp->word);
-		
-// 	}
-// }
-
-
-// determines if anything is in buckets[i] and if so printf the word(s) there
-// for(int i = 0; i < buckets_length; i++) {
-// 		if(check_buckets[i]->next == NULL) {
-// 			continue;
-// 		}
-// 		else {
-// 			printf("something in check_buckets[%i]\n", i);
-// 			for(node *tmp = check_buckets[i]; tmp->next != NULL; tmp = tmp->next) {
-// 				printf("word: %s\n", tmp->word);
-// 			}
-// 			continue;
-// 		}
-// 	}
-// 	return;
-// }
