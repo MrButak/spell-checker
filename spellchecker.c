@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	bool is_check = false;
 	char current_word[max_word_length];
 
-	// allocate memory for each node in buckets array and insert head node
+	// allocate memory for each node
 	for(int i = 0; i < buckets_length; i++) {
 		buckets[i] = malloc(sizeof(node));
 		check_buckets[i] = malloc(sizeof(node));
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 	misspelled_buckets->next = NULL;
 
 
-	// store each word from dictionary into buckets[] as linked lists
+	// send words in dictionary.txt to be put into linked lists
 	int position;
 	while(fscanf(dict, "%s", current_word) != EOF) {
 		// determine index which current_word should be stored in buckets[]
@@ -79,14 +79,14 @@ int main(int argc, char *argv[]) {
 		store_hash(current_word, buckets[position], position, is_check);
 	}
 
-	// store each word from spellcheck.txt into check_buckets[] as linked lists
+	// send words in spellchecker.txt to be put into linked lists
 	is_check = true;
 	while (fscanf(check_spelling, "%s", current_word) != EOF) {
 		position = ((int)tolower(current_word[0]) - 97);
 		store_hash(current_word, check_buckets[position], position, is_check);
 	}
 
-	// call funtion that will compare lists which will in turn call function to compare words
+	// this funtion will compare lists which will then call a function to compare words
 	compare_lists();
 
 	// printf out misspelled words
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
 
 
 void store_hash(char current_word[], node *head, int position, bool is_check) {
-	
+	// put all words in dictionary.txt into array of linked lists
 	if(is_check == false) {
 		
 		// create new node and give value of current_word
@@ -127,6 +127,8 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 
 		return;
 	}
+
+	// put all words from spellchecker.txt into array of linked lists
 	else {
 		// create new node and give value of current_word
 		node *curr_word = malloc(sizeof(node));
@@ -172,7 +174,7 @@ void compare_lists(void) {
 
 
 void compare_words(char word_to_check[], int index) {
-	// iterate through every word of dictionary in index position to look for a match
+	// iterate through every word of dictionary in int index position to look for a match
 	for(node *tmp = buckets[index]; tmp->next != NULL; tmp = tmp->next) {
 		if(strcmp(word_to_check, tmp->word) == 0) {
 			return;
