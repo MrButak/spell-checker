@@ -10,7 +10,7 @@ int max_word_length = 28;
 typedef struct node {
 	char word[28];
 	struct node *next;
-} 
+}
 node;
 
 node *buckets[26];
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
 void store_hash(char current_word[], node *head, int position, bool is_check) {
 	// put all words in dictionary.txt into array of linked lists
 	if(is_check == false) {
-		
+
 		// create new node and give value of current_word
 		node *curr_word = malloc(sizeof(node));
 		if(curr_word == NULL) {
@@ -140,16 +140,15 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 
 		// convert to lowercase
 		int word_len = strlen(current_word);
-		char tmp_word[max_word_length];
+		char tmp_word[word_len];
 
 		for(int i = 0; i < word_len; i++) {
-			if(isalpha(current_word[i]) != 0) {
-				tmp_word[i] = tolower(current_word[i]);
-			}
+			tmp_word[i] = tolower(current_word[i]);
 		}
 
 		tmp_word[word_len] = '\0';
 		strcpy(curr_word->word, tmp_word);
+
 		curr_word->next = head; // point new node to current head
 		check_buckets[position] = curr_word; // point back to list
 
@@ -159,7 +158,7 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 
 
 void compare_lists(void) {
-	
+
 	for(int i = 0; i < buckets_length; i++) {
 		// check to see if array position is empty. if so continue to next iteration
 		if(check_buckets[i]->next == NULL) {
@@ -180,7 +179,7 @@ void compare_words(char word_to_check[], int index) {
 	for(node *tmp = buckets[index]; tmp->next != NULL; tmp = tmp->next) {
 		if(strcmp(word_to_check, tmp->word) == 0) {
 			return;
-		}	
+		}
 	}
 	// if no word match, create new node and link it to the list
 	node *misspelled = malloc(sizeof(node));
