@@ -143,13 +143,15 @@ void store_hash(char current_word[], node *head, int position, bool is_check) {
 		char tmp_word[max_word_length];
 
 		for(int i = 0; i < word_len; i++) {
-			tmp_word[i] = tolower(current_word[i]);
+			if(isalpha(current_word[i]) != 0) {
+				tmp_word[i] = tolower(current_word[i]);
+			}
 		}
 
 		tmp_word[word_len] = '\0';
 		strcpy(curr_word->word, tmp_word);
 		curr_word->next = head; // point new node to current head
-		check_buckets[position] = curr_word; // assign index 0 to new node
+		check_buckets[position] = curr_word; // point back to list
 
 		return;
 	}
