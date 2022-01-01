@@ -1,11 +1,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <stdint.h>
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
 
+// todo:
+// 1. use strcasecmp instead of strcmp.
+// 2. omit punctuation.
 int max_word_length = 28;
 typedef struct node {
 	char word[28];
